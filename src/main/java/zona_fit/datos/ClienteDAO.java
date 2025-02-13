@@ -99,7 +99,7 @@ public class ClienteDAO implements IClienteDAO{
     public boolean modificarCliente(Cliente cliente) {
         PreparedStatement ps;
         Connection con = getConexion();
-        String sql = "UPDATE cliente SET nombre=?, apellido=?, membresia=?" + "WHERE id = ?";
+        String sql = "UPDATE cliente SET nombre=?, apellido=?, membresia=? WHERE id = ?";
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, cliente.getNombre());
@@ -123,6 +123,24 @@ public class ClienteDAO implements IClienteDAO{
 
     @Override
     public boolean eliminarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        Connection con = getConexion();
+        String sql = "DELETE FROM cliente WHERE id = ?";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, cliente.getId());
+            ps.execute();
+            return true;
+        }catch (Exception e){
+            System.out.println("Error al eliminar cliente: " + e.getMessage());
+        }
+        finally {
+            try {
+                con.close();
+            }catch (Exception e){
+                System.out.println("Error al cerrar conexion: " + e.getMessage());
+            }
+        }
         return false;
     }
 
@@ -156,13 +174,23 @@ public class ClienteDAO implements IClienteDAO{
 //        }
 
         //Modificar cliente
-        var modCliente = new Cliente(1, "Carlos Daniel", "Ortiz", 300);
-        var modificado = clienteDao.modificarCliente(modCliente);
-        if (modificado){
-            System.out.println("Cliente modificado: " + modCliente);
+//        var modCliente = new Cliente(1, "Carlos Daniel", "Ortiz", 600);
+//        var modificado = clienteDao.modificarCliente(modCliente);
+//        if (modificado){
+//            System.out.println("Cliente modificado: " + modCliente);
+//        }
+//        else {
+//            System.out.println("No se modificó el cliente:" + modCliente);
+//        }
+
+        //Eliminar cliente
+        var clienteEliminar = new Cliente(5);
+        var eliminado = clienteDao.eliminarCliente(clienteEliminar);
+        if (eliminado){
+            System.out.println("Cliente eliminado: " + clienteEliminar);
         }
-        else {
-            System.out.println("No se modificó el cliente:" + modCliente);
+        else{
+            System.out.println("No se eliminó el cliente: " + clienteEliminar);
         }
 
         //Listar clientes
